@@ -2,13 +2,23 @@ import React, { useEffect, useState } from "react";
 import ColdDrink from "../ColdDrink/ColdDrink";
 
 const ColdDrinks = ({ fetchColdDrinkData }) => {
-    const [cart, setCart] = useState([]);
+    const [carts, setCarts] = useState([]);
     const [data, setData] = useState([]);
 
     const handleAddToCart = (bottle) => {
         //console.log("You clicked to the button", bottle.name);
-        const newCart = [...cart, bottle];
-        setCart(newCart);
+        const exist = carts.find((item) => item.id === bottle.id);
+        if (!exist) {
+            const newCart = [...carts, bottle];
+            setCarts(newCart);
+        } else {
+            alert(`${bottle.name} already exist`);
+        }
+        console.log(exist);
+    };
+    const handleRemoveCart = (id) => {
+        const newCart = carts.filter((item) => item.id !== id);
+        setCarts(newCart);
     };
 
     useEffect(() => {
@@ -16,7 +26,7 @@ const ColdDrinks = ({ fetchColdDrinkData }) => {
     }, [fetchColdDrinkData]);
     // const data = use(fetchColdDrinkData);
     //console.log(data);
-    console.log(cart);
+    console.log(carts);
     return (
         <div>
             <h3>Total Cold Drinks: {data.length}</h3>
@@ -34,10 +44,28 @@ const ColdDrinks = ({ fetchColdDrinkData }) => {
                 </div>
                 <div className="col-span-2 bg-amber-50 border-2 border-amber-900 rounded-2xl">
                     <h3 className="text-center font-bold text-xl">
-                        Cart Items:{cart.length}
+                        Cart Items:{carts.length}
                     </h3>
                     <div>
-                        <img src={cart} alt="" />
+                        {carts.map((item) => {
+                            return (
+                                <div className="flex justify-between items-center m-1 bg-blue-400 rounded-xl">
+                                    <img
+                                        className="h-10 p-2"
+                                        src={item.image}
+                                    ></img>
+                                    <p className="font-bold">{item.name}</p>
+                                    <button
+                                        onClick={() =>
+                                            handleRemoveCart(item.id)
+                                        }
+                                        className="p-2 hover:bg-blue-500 hover:rounded-xl"
+                                    >
+                                        ❌
+                                    </button>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
